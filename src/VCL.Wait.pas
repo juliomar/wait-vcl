@@ -37,7 +37,9 @@ begin
     procedure
     begin
       if Assigned(BlockUI) then
-        FBlockUI := TBlockUI.Create(BlockUI);
+        FBlockUI := TBlockUI.Create(BlockUI)
+      else
+        FBlockUI := TBlockUI.Create(Application.MainForm);
       FWaitForm := TFrmWait.Create(nil);
       FWaitForm.FormStyle := fsStayOnTop;
       FWaitForm.Position := poMainFormCenter;
