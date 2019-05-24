@@ -8,11 +8,11 @@ type
   TProgressBarDefault = class(TInterfacedObject, IProgressBar)
   private
     FProgressBar: TProgressBar;
-    procedure SetMax(const Value: Cardinal);
+    procedure SetMax(const Value: Integer);
     procedure Step; overload;
-    procedure Step(const Value: Cardinal); overload;
-    function Position: Cardinal;
-    procedure SetPosition(const Position: Cardinal);
+    procedure Step(const Value: Integer); overload;
+    function Position: Integer;
+    procedure SetPosition(const Position: Integer);
   public
     constructor Create(const ProgressBar: TProgressBar);
     destructor Destroy; override;
@@ -33,12 +33,12 @@ begin
   inherited;
 end;
 
-procedure TProgressBarDefault.SetMax(const Value: Cardinal);
+procedure TProgressBarDefault.SetMax(const Value: Integer);
 begin
   FProgressBar.Max := Value;
 end;
 
-procedure TProgressBarDefault.SetPosition(const Position: Cardinal);
+procedure TProgressBarDefault.SetPosition(const Position: Integer);
 begin
   TThread.Synchronize(TThread.Current,
     procedure
@@ -47,12 +47,12 @@ begin
     end);
 end;
 
-function TProgressBarDefault.Position: Cardinal;
+function TProgressBarDefault.Position: Integer;
 begin
   Result := Round(Int(FProgressBar.Position));
 end;
 
-procedure TProgressBarDefault.Step(const Value: Cardinal);
+procedure TProgressBarDefault.Step(const Value: Integer);
 begin
   TThread.Synchronize(TThread.Current,
     procedure
