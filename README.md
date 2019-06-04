@@ -1,5 +1,5 @@
 # Form to wait for VCL projects (Delphi)
-![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE..10.3%20Rio-blue.svg)
+![Delphi Supported Versions](https://img.shields.io/badge/Delphi%20Supported%20Versions-XE3..10.3%20Rio-blue.svg)
 ![Platforms](https://img.shields.io/badge/Platforms-Win32%20and%20Win64-red.svg)
 
 This component allows you to create forms of wait with progress bar (optional) in a simple way.
