@@ -8,7 +8,7 @@ This component allows you to create forms of wait with progress bar (optional) i
  * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
  * [**BlockUI-VCL**](https://github.com/viniciussanchez/blockui-vcl) - Block User Interface for VCL Projects (Delphi)
  
-### Installation: 
+### Installation 
 ```
 boss install github.com/viniciussanchez/wait-vcl
 ```
