@@ -102,6 +102,8 @@ begin
   TThread.Synchronize(TThread.Current,
     procedure
     begin
+      if not Self.FProgressBar.Visible then
+        Self.Show;	
       Self.FProgressBar.Position := Self.FProgressBar.Position + Value;
       Self.FProgressBar.Update;
     end);

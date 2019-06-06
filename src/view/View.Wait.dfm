@@ -17,7 +17,6 @@ object FrmWait: TFrmWait
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  Visible = True
   DesignSize = (
     380
     110)
@@ -50,8 +49,6 @@ object FrmWait: TFrmWait
     Position = 50
     TabOrder = 0
     Visible = False
-    ExplicitLeft = 74
-    ExplicitWidth = 306
   end
   object ActivityIndicator: TActivityIndicator
     Left = 17

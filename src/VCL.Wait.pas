@@ -15,7 +15,10 @@ type
     /// <summary>
     ///   Creates the required resources.
     /// </summary>
-    constructor Create;
+    /// <param name="Content">
+    ///   Message to be set.
+    /// </param>
+    constructor Create(const Content: string);
     /// <summary>
     ///   Get the message from the screen to wait.
     /// </summary>
@@ -65,18 +68,23 @@ begin
   Result := Self.FProgressBar;
 end;
 
-constructor TWait.Create;
+constructor TWait.Create(const Content: string);
 begin
   Self.FBlockUI := TBlockUI.Create(Application.MainForm);
   Self.FWaitForm := TFrmWait.Create(Application);
   Self.FProgressBar := TProgressBarDefault.Create(Self.FWaitForm.pbWait);
+  Self.SetContent(Content);
 end;
 
 destructor TWait.Destroy;
 begin
-  FreeAndNil(Self.FWaitForm);
-  Self.FProgressBar := nil;
-  Self.FBlockUI := nil;
+  FBlockUI := nil;
+  FProgressBar := nil;
+  if (Assigned(FWaitForm)) then
+  begin
+    FWaitForm.Close;
+    FWaitForm := nil;
+  end;
   inherited;
 end;
 
@@ -105,11 +113,6 @@ begin
     procedure
     begin
       try
-        TThread.Synchronize(nil,
-        procedure
-        begin
-          Self.FWaitForm.Show;
-        end);
         Process;
       finally
         TThread.Synchronize(nil,
@@ -121,6 +124,7 @@ begin
     end);
   FActivityThread.FreeOnTerminate := True;
   FActivityThread.Start;
+  Self.FWaitForm.ShowModal;  
 end;
 
 end.
