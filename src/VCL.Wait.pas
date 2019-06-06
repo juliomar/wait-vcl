@@ -2,21 +2,57 @@ unit VCL.Wait;
 
 interface
 
-uses BlockUI.Intf, VCL.Forms, VCL.Controls, VCL.BlockUI, VCL.ExtCtrls, System.Classes, VCL.Wait.Intf, Providers.ProgressBar.Intf,
-  View.Wait;
+uses VCL.BlockUI.Intf, VCL.Forms, VCL.Controls, VCL.BlockUI, VCL.ExtCtrls, System.Classes, Providers.ProgressBar.Intf,
+  View.Wait, System.SysUtils;
 
 type
-  TWait = class(TInterfacedObject, IWait)
+  TWait = class
   private
-    FWaitForm: TFrmWait;
-    FProgressBar: IProgressBar;
     FBlockUI: IBlockUI;
-    function Content: string;
-    procedure SetContent(const Content: string);
-    procedure ShowProgressBar(const Value: Boolean);
-    function ProgressBar: IProgressBar;
+    FProgressBar: IProgressBar;
+    FWaitForm: TFrmWait;
   public
-    constructor Create(const Content: string; const BlockUI: TWinControl = nil); overload;
+    /// <summary>
+    ///   Creates the required resources.
+    /// </summary>
+    constructor Create;
+    /// <summary>
+    ///   Get the message from the screen to wait.
+    /// </summary>
+    /// <returns>
+    ///   Defined message.
+    /// </returns>
+    function Content: string;
+    /// <summary>
+    ///   Sets a new message to the screen to wait.
+    /// </summary>
+    /// <param name="Content">
+    ///   New message to be set.
+    /// </param>
+    /// <returns>
+    ///   Returns the instance itself.
+    /// </returns>
+    function SetContent(const Content: string): TWait;
+    /// <summary>
+    ///   Access the progress bar.
+    /// </summary>
+    /// <returns>
+    ///   Returns an instance of the IProgressBar interface.
+    /// </returns>
+    function ProgressBar: IProgressBar;
+    /// <summary>
+    ///   Creates a wait screen.
+    /// </summary>
+    /// <param name="Process">
+    ///   Procedure that should be performed with the wait screen.
+    /// </param>
+    /// <returns>
+    ///   Returns the instance itself.
+    /// </returns>
+    function Start(const Process: TProc): TWait;
+    /// <summary>
+    ///   Destroys the resources created.
+    /// </summary>
     destructor Destroy; override;
   end;
 
@@ -26,67 +62,65 @@ uses Providers.ProgressBar.Default;
 
 function TWait.ProgressBar: IProgressBar;
 begin
-  if not Assigned(FProgressBar) then
-    FProgressBar := TProgressBarDefault.Create(FWaitForm.pbWait);
-  Result := FProgressBar;
+  Result := Self.FProgressBar;
 end;
 
-constructor TWait.Create(const Content: string; const BlockUI: TWinControl);
+constructor TWait.Create;
 begin
-  TThread.Synchronize(TThread.Current,
-    procedure
-    begin
-      if Assigned(BlockUI) then
-        FBlockUI := TBlockUI.Create(BlockUI)
-      else
-        FBlockUI := TBlockUI.Create(Application.MainForm);
-      FWaitForm := TFrmWait.Create(nil);
-      FWaitForm.FormStyle := fsStayOnTop;
-      FWaitForm.Position := poMainFormCenter;
-      FWaitForm.Update;
-      Self.ProgressBar.SetPosition(0);
-      Self.SetContent(Content);
-      FWaitForm.Show;
-    end);
+  Self.FBlockUI := TBlockUI.Create(Application.MainForm);
+  Self.FWaitForm := TFrmWait.Create(Application);
+  Self.FProgressBar := TProgressBarDefault.Create(Self.FWaitForm.pbWait);
 end;
 
 destructor TWait.Destroy;
 begin
-  TThread.Synchronize(TThread.Current,
-    procedure
-    begin
-      FWaitForm.free;
-      FWaitForm := nil;
-      if Assigned(FBlockUI) then
-        FBlockUI.Unlock;
-      FBlockUI := nil;
-    end);
+  FreeAndNil(Self.FWaitForm);
+  Self.FProgressBar := nil;
+  Self.FBlockUI := nil;
   inherited;
-end;
-
-procedure TWait.ShowProgressBar(const Value: Boolean);
-begin
-  TThread.Synchronize(TThread.Current,
-    procedure
-    begin
-      FWaitForm.pbWait.Visible := Value;
-      FWaitForm.pbWait.Update;
-    end);
 end;
 
 function TWait.Content: string;
 begin
-  Result := FWaitForm.lblContent.Caption;
+  Result := Self.FWaitForm.lblContent.Caption;
 end;
 
-procedure TWait.SetContent(const Content: string);
+function TWait.SetContent(const Content: string): TWait;
 begin
+  Result := Self;
   TThread.Synchronize(TThread.Current,
     procedure
     begin
-      FWaitForm.lblContent.Caption := Content;
-      FWaitForm.lblContent.Update;
+      Self.FWaitForm.lblContent.Caption := Content;
+      Self.FWaitForm.lblContent.Update;
     end);
+end;
+
+function TWait.Start(const Process: TProc): TWait;
+var
+  FActivityThread: TThread;
+begin
+  Result := Self;
+  FActivityThread := TThread.CreateAnonymousThread(
+    procedure
+    begin
+      try
+        TThread.Synchronize(nil,
+        procedure
+        begin
+          Self.FWaitForm.Show;
+        end);
+        Process;
+      finally
+        TThread.Synchronize(nil,
+        procedure
+        begin
+          Self.Destroy;
+        end);
+      end;
+    end);
+  FActivityThread.FreeOnTerminate := True;
+  FActivityThread.Start;
 end;
 
 end.

@@ -14,55 +14,48 @@ boss install github.com/viniciussanchez/wait-vcl
 ```
 
 ### Getting Started
-You need to use VCL.Wait.Intf and VCL.Wait
+You need to use VCL.Wait
 ```
-uses VCL.Wait.Intf, VCL.Wait;
+uses VCL.Wait;
 ```
 
 #### Form with progress bar
 ```
 var
-  I: Integer;
-  Waiting: IWait;
+  Waiting: TWait;
 begin
-  Waiting := TWait.Create('Exemplifying the wait screen', Self);
-  Waiting.ShowProgressBar(True);
-  Waiting.ProgressBar.SetMax(100);
-  Waiting.ProgressBar.SetPosition(0);
-  for I := 1 to 100 do
-  begin
-    Sleep(50);
-    Waiting.ProgressBar.Step;
-  end;
+  Waiting := TWait.Create.SetContent('Aguarde...').Start(
+    procedure
+    var
+      I: Integer;
+    begin
+      Waiting.ProgressBar.Show;
+      Waiting.ProgressBar.SetMax(100);
+      for I := 1 to 100 do
+      begin
+        Waiting.SetContent('Aguarde... ' + I.ToString + ' de 100');
+        Waiting.ProgressBar.Step();
+        Sleep(100); // Your code here!!!        
+      end;
+    end);
 end;
 ``` 
 ![wait-vcl](img/Screenshot_1.png)
 
-**Self** refers to the component that will be blocked until the end. The default is Application.MainForm.
-
-```
-Waiting := TWait.Create('Exemplifying the wait screen', Self);
-Waiting := TWait.Create('Exemplifying the wait screen', FrmSample);
-Waiting := TWait.Create('Exemplifying the wait screen');
-``` 
-
 You can increment more than one:
 
 ```
-for I := 1 to 50 do
-begin
-  Sleep(50);
-  Waiting.ProgressBar.Step(2);
-end;
+Waiting.ProgressBar.Step(2);
 ``` 
 
 #### Form without progress bar
 ```
-var
-  Waiting: IWait;
 begin
-  Waiting := TWait.Create('Exemplifying the wait screen');
-  Sleep(3000); // Your code...
+  TWait.Create.SetContent('Aguarde...').Start(
+    procedure
+    begin
+      Sleep(1500); // Your code here!!!
+    end);
 end;
 ```
 ![wait-vcl](img/Screenshot_2.png)
