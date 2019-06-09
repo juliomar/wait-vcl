@@ -4,13 +4,22 @@
 
 This component allows you to create forms of wait with progress bar (optional) in a simple way using threads. The use of the thread causes the application not to be locked during the execution of a process.
 
-### Prerequisites
- * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
+## Prerequisites
+ * `[Optional]` For ease I recommend using the Boss for installation
+   * [**Boss**](https://github.com/HashLoad/boss) - Dependency Manager for Delphi
  * [**BlockUI-VCL**](https://github.com/viniciussanchez/blockui-vcl) - Block User Interface for VCL Projects (Delphi)
  
-### Installation 
+### Installation using Boss (dependency manager for Delphi applications)
 ```
 boss install github.com/viniciussanchez/wait-vcl
+```
+
+### Manual Installation
+Add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
+```
+../wait-vcl/src
+../wait-vcl/src/view
+../wait-vcl/src/providers
 ```
 
 ### Getting Started
