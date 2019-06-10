@@ -113,7 +113,11 @@ begin
     procedure
     begin
       try
-        Process;
+        try
+          Process;
+        except on E:Exception do
+          Application.ShowException(E);
+        end;
       finally
         TThread.Synchronize(nil,
         procedure
