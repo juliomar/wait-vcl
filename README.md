@@ -24,12 +24,12 @@ Add the following folders to your project, in *Project > Options > Resource Comp
 
 ### Getting Started
 You need to use VCL.Wait
-```
+```pascal
 uses VCL.Wait;
 ```
 
 #### Form with progress bar
-```
+```pascal
 var
   Waiting: TWait;
 begin
@@ -51,14 +51,14 @@ begin
 
 You can increment more than one:
 
-```
+```pascal
 Waiting.ProgressBar.Step(2);
 ``` 
 
 The Start function will create a thread to execute the procedure passed as parameter. Within a thread should not be made interactions with the user! If you need to, use a TThread.Synchronize.
 
 #### Form without progress bar
-```
+```pascal
 begin
   TWait.Create('Aguarde...').Start(
     procedure
