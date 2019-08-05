@@ -33,7 +33,7 @@ uses VCL.Wait;
 var
   Waiting: TWait;
 begin
-  Waiting := TWait.Create('Aguarde...');
+  Waiting := TWait.Create('Wait...');
   Waiting.Start(
     procedure
     var
@@ -42,10 +42,11 @@ begin
       Waiting.ProgressBar.SetMax(100);
       for I := 1 to 100 do
       begin
-        Waiting.SetContent('Aguarde... ' + I.ToString + ' de 100').ProgressBar.Step();
+        Waiting.SetContent('Wait... ' + I.ToString + ' of 100').ProgressBar.Step();
         Sleep(100); // Your code here!!!
       end;
     end);
+end;
 ``` 
 ![wait-vcl](img/Screenshot_1.png)
 
@@ -60,7 +61,7 @@ The Start function will create a thread to execute the procedure passed as param
 #### Form without progress bar
 ```pascal
 begin
-  TWait.Create('Aguarde...').Start(
+  TWait.Create('Wait...').Start(
     procedure
     begin
       Sleep(1500); // Your code here!!!
