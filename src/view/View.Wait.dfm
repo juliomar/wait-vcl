@@ -26,7 +26,7 @@ object FrmWait: TFrmWait
     Left = 80
     Top = 29
     Width = 286
-    Height = 52
+    Height = 48
     Anchors = [akLeft, akTop, akRight, akBottom]
     AutoSize = False
     Caption = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do'
@@ -36,6 +36,7 @@ object FrmWait: TFrmWait
     Font.Name = 'Segoe UI Semibold'
     Font.Style = []
     ParentFont = False
+    Layout = tlCenter
     WordWrap = True
   end
   object pbWait: TProgressBar
