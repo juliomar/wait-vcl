@@ -11,6 +11,8 @@ type
     FBlockUI: IBlockUI;
     FProgressBar: IProgressBar;
     FWaitForm: TFrmWait;
+    FBlockControl: TWinControl;
+    procedure ShowWaitForm;
   public
     /// <summary>
     ///   Creates the required resources.
@@ -26,6 +28,13 @@ type
     ///   Defined message.
     /// </returns>
     function Content: string;
+    /// <summary>
+    ///   Sets the control that must the block UI shown.
+    /// </summary>
+    /// <returns>
+    ///   Returns the instance itself.
+    /// </returns>
+    function SetBlockControl(const AWinControl: TWinControl): TWait;
     /// <summary>
     ///   Sets a new message to the screen to wait.
     /// </summary>
@@ -70,7 +79,6 @@ end;
 
 constructor TWait.Create(const Content: string);
 begin
-  Self.FBlockUI := TBlockUI.Create(Application.MainForm);
   Self.FWaitForm := TFrmWait.Create(Application);
   Self.FProgressBar := TProgressBarDefault.Create(Self.FWaitForm.pbWait);
   Self.SetContent(Content);
@@ -93,6 +101,12 @@ begin
   Result := Self.FWaitForm.lblContent.Caption;
 end;
 
+function TWait.SetBlockControl(const AWinControl: TWinControl): TWait;
+begin
+  Result := Self;
+  FBlockControl := AWinControl;
+end;
+
 function TWait.SetContent(const Content: string): TWait;
 begin
   Result := Self;
@@ -104,11 +118,25 @@ begin
     end);
 end;
 
+procedure TWait.ShowWaitForm;
+begin
+  if Assigned(FBlockControl) then
+  begin
+    Self.FWaitForm.Parent := FBlockControl;
+    Self.FWaitForm.Show;
+    Self.FWaitForm.Left := (FBlockControl.Width - Self.FWaitForm.Width) div 2;
+    Self.FWaitForm.Top := (FBlockControl.Height - Self.FWaitForm.Height) div 2;
+  end
+  else
+    Self.FWaitForm.ShowModal;
+end;
+
 function TWait.Start(const Process: TProc): TWait;
 var
   FActivityThread: TThread;
 begin
   Result := Self;
+  Self.FBlockUI := TBlockUI.Create(FBlockControl);
   FActivityThread := TThread.CreateAnonymousThread(
     procedure
     begin
@@ -119,16 +147,16 @@ begin
           Application.ShowException(E);
         end;
       finally
-        TThread.Synchronize(nil,
-        procedure
-        begin
-          Self.Destroy;
-        end);
+        TThread.Synchronize(TThread.CurrentThread,
+          procedure
+          begin
+            Self.Destroy;
+          end);
       end;
     end);
   FActivityThread.FreeOnTerminate := True;
   FActivityThread.Start;
-  Self.FWaitForm.ShowModal;  
+  ShowWaitForm;
 end;
 
 end.
