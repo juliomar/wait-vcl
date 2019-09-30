@@ -2,12 +2,12 @@ unit Providers.ProgressBar.Default;
 
 interface
 
-uses Providers.ProgressBar.Intf, Vcl.ComCtrls;
+uses Providers.ProgressBar.Intf, Vcl.Samples.Gauges;
 
 type
   TProgressBarDefault = class(TInterfacedObject, IProgressBar)
   private
-    FProgressBar: TProgressBar;
+    FProgressBar: TGauge;
     /// <summary>
     ///   Gets the max value set for the progress bar.
     /// </summary>
@@ -52,7 +52,7 @@ type
     /// </summary>
     procedure Hide;
   public
-    constructor Create(const ProgressBar: TProgressBar);
+    constructor Create(const ProgressBar: TGauge);
     destructor Destroy; override;
   end;
 
@@ -60,10 +60,10 @@ implementation
 
 uses System.Classes;
 
-constructor TProgressBarDefault.Create(const ProgressBar: TProgressBar);
+constructor TProgressBarDefault.Create(const ProgressBar: TGauge);
 begin
   Self.FProgressBar := ProgressBar;
-  Self.FProgressBar.Position := 0;
+  Self.FProgressBar.Progress := 0;
 end;
 
 destructor TProgressBarDefault.Destroy;
@@ -74,7 +74,7 @@ end;
 
 function TProgressBarDefault.Max: Integer;
 begin
-  Result := Self.FProgressBar.Max;
+  Result := Self.FProgressBar.MaxValue;
 end;
 
 procedure TProgressBarDefault.SetMax(const Value: Integer);
@@ -82,7 +82,7 @@ begin
   TThread.Synchronize(TThread.Current,
     procedure
     begin
-      Self.FProgressBar.Max := Value;
+      Self.FProgressBar.MaxValue := Value;
       Self.FProgressBar.Update;
     end);
 end;
@@ -92,7 +92,7 @@ begin
   TThread.Synchronize(TThread.Current,
     procedure
     begin
-      Self.FProgressBar.Position := Position;
+      Self.FProgressBar.Progress := Position;
       Self.FProgressBar.Update;
     end);
 end;
@@ -104,14 +104,14 @@ begin
     begin
       if not Self.FProgressBar.Visible then
         Self.Show;	
-      Self.FProgressBar.Position := Self.FProgressBar.Position + Value;
+      Self.FProgressBar.Progress := Self.FProgressBar.Progress + Value;
       Self.FProgressBar.Update;
     end);
 end;
 
 function TProgressBarDefault.Position: Integer;
 begin
-  Result := Self.FProgressBar.Position;
+  Result := Self.FProgressBar.Progress;
 end;
 
 procedure TProgressBarDefault.Show;
