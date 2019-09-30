@@ -1,0 +1,14 @@
+{
+	"hash": "d41d8cd98f00b204e9800998ecf8427e",
+	"updated": "2019-08-05T08:37:09.5793561-03:00",
+	"installedModules": {
+		"github.com/viniciussanchez/blockui-vcl": {
+			"name": "blockui-vcl",
+			"version": "v1.0.1",
+			"hash": "e5063ddc7758f21a75470586f7e72790",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		}
+	}
+}
