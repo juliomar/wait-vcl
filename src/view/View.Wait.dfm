@@ -39,17 +39,22 @@ object FrmWait: TFrmWait
     Layout = tlCenter
     WordWrap = True
   end
-  object pbWait: TProgressBar
+  object pbWait: TGauge
     Left = 0
-    Top = 99
+    Top = 105
     Width = 380
-    Height = 11
+    Height = 5
     Align = alBottom
-    DoubleBuffered = False
-    ParentDoubleBuffered = False
-    Position = 50
-    TabOrder = 0
+    BorderStyle = bsNone
+    Color = clWhite
+    ForeColor = 6316032
+    ParentColor = False
+    Progress = 0
+    ShowText = False
     Visible = False
+    ExplicitLeft = 3
+    ExplicitTop = 101
+    ExplicitWidth = 374
   end
   object ActivityIndicator: TActivityIndicator
     Left = 17
