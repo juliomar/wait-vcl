@@ -1,0 +1,11 @@
+{
+	"name": "wait-vcl",
+	"description": "",
+	"version": "1.0.0",
+	"homepage": "",
+	"mainsrc": "/src",
+	"projects": [],
+	"dependencies": {
+		"github.com/viniciussanchez/blockui-vcl": "^v1.0.1"
+	}
+}
