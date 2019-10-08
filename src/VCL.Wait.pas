@@ -110,7 +110,7 @@ end;
 function TWait.SetContent(const Content: string): TWait;
 begin
   Result := Self;
-  TThread.Synchronize(TThread.Current,
+  TThread.Synchronize(TThread.CurrentThread,
     procedure
     begin
       Self.FWaitForm.lblContent.Caption := Content;
